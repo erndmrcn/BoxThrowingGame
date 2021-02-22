@@ -34,6 +34,15 @@ public class PoolingController : MonoBehaviour
         return newBox;
     }
 
+    public void UpdateWeight(float weight)
+    {
+        // update mass of pooling items
+        foreach (Box item in PoolingController.PoolingManager.items)
+        {
+            item.GetComponent<Rigidbody>().mass = weight;
+        }
+    }
+
     public Box getItem()
     {
         // check if item is active or deactive
@@ -41,5 +50,13 @@ public class PoolingController : MonoBehaviour
         // gameObject.activeInHierarchy
 
         return items.Find(x=>x.gameObject.activeInHierarchy==false);
+    }
+
+    public void cleanScene()
+    {
+        while(items.Find(x => x.gameObject.activeInHierarchy == true))
+        {
+            items.Find(x => x.gameObject.activeInHierarchy == true).gameObject.SetActive(false);
+        }
     }
 }

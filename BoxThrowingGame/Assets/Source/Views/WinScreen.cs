@@ -7,7 +7,7 @@ public class WinScreen : Screen
 {
     public Button mainMenuButton;
     public Button tryAgainButton;
-    public TMPro.TMP_Text score;
+    public Text txt_score;
 
     public override void Initialize()
     {
@@ -17,6 +17,11 @@ public class WinScreen : Screen
     public void mainMenuButtonEvent()
     {
         GameController.Manager.changeState(GameController.Gamestates.ready);
+    }
+
+    public void ShowScore(int PlayerScore)
+    {
+        txt_score.text = PlayerScore.ToString();
     }
 
     public void tryAgainButtonEvent()
