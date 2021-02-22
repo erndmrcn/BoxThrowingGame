@@ -20,17 +20,29 @@ public class PauseScreen : Screen
         GameController.Manager.changeState(GameController.Gamestates.ready);
     }
 
+    public void EscapeEvent()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameController.Manager.changeState(GameController.Gamestates.resume);
+        }
+    }
+
     public void resumeButtonEvent()
     {
         // resume where you left
         // add another state that cont. where the player left
-        GameController.Manager.changeState(GameController.Gamestates.game);
+        GameController.Manager.changeState(GameController.Gamestates.resume);
     }
 
     public void restartButtonEvent()
     {
         // restart (reset the game)
-        GameController.Manager.changeState(GameController.Gamestates.ready);
+        GameController.Manager.changeState(GameController.Gamestates.game);
     }
 
+    private void Update()
+    {
+        EscapeEvent();
+    }
 }
