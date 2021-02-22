@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
         playerController.Initialize();
         screenManager.Initialize();
         boxController.Initialize();
-        GameTime = 45;
+        GameTime = 120;
     }
 
     public void onScoreUpdate(int score)
@@ -66,7 +66,7 @@ public class GameController : MonoBehaviour
         PoolingController.PoolingManager.cleanScene();
         BoxController.Manager.spawn();
         PlayerController.Manager.Reposition();
-        GameTime = 45;
+        GameTime = 120;
         PlayerScore = 0;
     }
 

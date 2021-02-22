@@ -5173,6 +5173,7 @@ MonoBehaviour:
   IsKicked: 0
   kickedBox: {fileID: 0}
   Moving: 0
+  IsFalling: 0
   InitialPosition: {x: 0, y: 0, z: 0}
   joystick: {fileID: 1210525574}
 --- !u!54 &1470865679
@@ -5189,7 +5190,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!95 &1470865680 stripped
 Animator:
