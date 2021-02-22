@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public bool IsKicked;
     public Box kickedBox;
     public bool Moving;
+    public bool IsFalling;
     public Vector3 InitialPosition;
     Vector3 direction;
     public static PlayerController Manager;
@@ -39,8 +40,8 @@ public class PlayerController : MonoBehaviour
     public void ControllerUpdate()
     {
 #if UNITY_EDITOR
-        Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-        movement = new Vector3(joystick.Horizontal, 0.0f, joystick.Vertical);
+        Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), movement.y, Input.GetAxis("Vertical"));
+        movement = new Vector3(joystick.Horizontal, movement.y, joystick.Vertical);
         if (dir != Vector3.zero)
         {
             movement = dir;
@@ -51,7 +52,7 @@ public class PlayerController : MonoBehaviour
         if (movement != Vector3.zero)
         {
             Moving = true;
-            direction = movement;
+            direction = new Vector3 (movement.x, 0.0f, movement.z);
             animator.SetBool("IsMoving", true);
         }
         else
@@ -60,13 +61,15 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IsMoving", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!IsJumped)
         {
-            IsJumped = true;
-            animator.Play("Jump", 0, 0.15f);
-            animator.SetBool("IsJumped", true);
-            movement.y = jumpValue * Vector3.up.y;
-            transform.position = movement;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                IsJumped = true;
+                animator.Play("Jump", 0, 0.0f);
+                animator.SetBool("IsJumped", true);
+                
+            }
         }
     }
 
@@ -103,12 +106,22 @@ public class PlayerController : MonoBehaviour
     public void Landed()
     {
         IsJumped = false;
+        IsFalling = false;
+        movement.y = 0.0f;
         animator.SetBool("IsJumped", false);
     }
 
     private void FixedUpdate()
     {
         transform.SetPositionAndRotation(transform.position + movement * speed * Time.deltaTime, Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 0.15F));
+        if (IsJumped && !IsFalling)
+        {
+            movement.y = Mathf.MoveTowards(movement.y, jumpValue/10.0f, 0.1f);
+        }
+        else if (IsFalling)
+        {
+            movement.y = Mathf.MoveTowards(movement.y, 0.0f, 0.1f);
+        }
         //rb.MovePosition(transform.position + movement * speed * Time.deltaTime);
     }
 
@@ -133,33 +146,25 @@ public class PlayerController : MonoBehaviour
         // it will change player's position in the
         // y direction with scale of jump_coefficient
         // ?
+        IsJumped = true;
     }
 
     public void Fall()
     {
         // ? 
-        animator.Play("Jump", 0, 0.45f);
-        animator.SetBool("IsJumped", true);
-        movement.y = InitialPosition.y;
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.transform.CompareTag("Ground"))
-        {
-            IsJumped = false;
-        }
+        IsFalling = true;
+        //animator.Play("Jump", 0, 0.45f);
+        //animator.SetBool("IsJumped", true);
     }
 
     public void ResetPhysic()
     {
-        IsJumped = false;
         IsKicked = false;
         Moving = false;
         animator.SetBool("IsMoving", false);
         animator.SetBool("IsJumped", false);
         animator.SetBool("IsKicked", false);
-        movement = Vector3.zero;
+        movement = new Vector3 (0.0f, movement.y, 0.0f);
     }
 
     public void Reposition()
